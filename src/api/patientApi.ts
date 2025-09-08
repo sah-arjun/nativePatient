@@ -1,4 +1,3 @@
-// src/api/patientApi.ts
 import axiosClient, { qs } from "./axiosClient";
 
 interface ShowRelativesPayload {
