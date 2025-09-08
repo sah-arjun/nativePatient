@@ -1,3 +1,4 @@
+// src/api/patientApi.ts
 import axiosClient, { qs } from "./axiosClient";
 
 interface ShowRelativesPayload {
@@ -6,11 +7,18 @@ interface ShowRelativesPayload {
 }
 
 export const patientApi = {
-  showRelatives: async (payload: ShowRelativesPayload) => {
-    // Convert payload to x-www-form-urlencoded
-    const formBody = qs.stringify(payload);
+  showRelatives: async (payload: Partial<ShowRelativesPayload>) => {
+    const state = await import("@/src/redux/store").then((m) =>
+      m.default.getState()
+    );
+    const { userId, orgId } = state.auth;
 
-    const response = await axiosClient.post("/showrelatives", formBody);
-    return response.data;
+    const body = qs.stringify({
+      userid: payload.userid ?? userId,
+      orgid: payload.orgid ?? orgId,
+    });
+
+    const res = await axiosClient.post("/showrelatives", body);
+    return res.data;
   },
 };

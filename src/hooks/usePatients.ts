@@ -1,14 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import { patientApi } from "../api/patientApi";
 
-export const usePatients = (userid: string, orgid: string = "614") => {
-  return useQuery({
-    queryKey: ["patients", userid],
+export const usePatients = () =>
+  useQuery({
+    queryKey: ["patients"],
     queryFn: async () => {
-      const data = await patientApi.showRelatives({ userid, orgid });
-      console.log("Fetched patients:", data);
-      // return the actual list
+      const data = await patientApi.showRelatives({});
+      // return the list of relatives
       return data?.response?.list ?? [];
     },
   });
-};

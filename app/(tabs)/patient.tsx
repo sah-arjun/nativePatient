@@ -1,11 +1,23 @@
 import React from "react";
 import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
+import { useDispatch, useSelector } from "react-redux";
 import PatientList from "../../src/components/PatientList";
 import { usePatients } from "../../src/hooks/usePatients";
+import { RootState } from "../../src/redux/store";
+import { selectPatient } from "../../src/redux/store/slices/patientSlice";
 
 export default function PatientScreen() {
-  const userId = "1000596100"; // replace with real logged-in user ID
-  const { data, isLoading, isError } = usePatients(userId);
+  const dispatch = useDispatch();
+  const userId = useSelector((state: RootState) => state.auth.userId);
+  const { data, isLoading, isError } = usePatients();
+
+  if (!userId) {
+    return (
+      <View style={styles.center}>
+        <Text>Please log in to view patients.</Text>
+      </View>
+    );
+  }
 
   if (isLoading) {
     return (
@@ -24,15 +36,20 @@ export default function PatientScreen() {
   return (
     <View style={styles.container}>
       {data && data.length > 0 ? (
-        <PatientList patients={data} />
+        <PatientList
+          patients={data}
+          onSelect={(p) => dispatch(selectPatient(p))}
+        />
       ) : (
-        <Text>No patients found.</Text>
+        <View style={styles.center}>
+          <Text>No patients found.</Text>
+        </View>
       )}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16, backgroundColor: "#fff" },
+  container: { padding: 16 },
   center: { flex: 1, justifyContent: "center", alignItems: "center" },
 });

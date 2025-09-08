@@ -1,21 +1,27 @@
 import React from "react";
-import { FlatList, Text, View } from "react-native";
+import { FlatList, Text, TouchableOpacity, View } from "react-native";
 
 interface Props {
   patients: any[];
+  onSelect?: (patient: any) => void; // optional callback
 }
 
-export default function PatientList({ patients }: Props) {
+export default function PatientList({ patients, onSelect }: Props) {
   return (
     <FlatList
       data={patients}
       keyExtractor={(item, index) =>
-        item.id ? item.id.toString() : index.toString()
+        item.userid ? item.userid.toString() : index.toString()
       }
       renderItem={({ item }) => (
-        <View style={{ marginVertical: 4 }}>
-          <Text>{JSON.stringify(item, null, 2)}</Text>
-        </View>
+        <TouchableOpacity
+          onPress={() => onSelect && onSelect(item)}
+          style={{ marginVertical: 4 }}
+        >
+          <View>
+            <Text>{JSON.stringify(item, null, 2)}</Text>
+          </View>
+        </TouchableOpacity>
       )}
     />
   );
